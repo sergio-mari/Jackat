@@ -1,0 +1,469 @@
+/* CONFIGURAÇÃO GERAL */
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+html{
+    height:100%;
+}
+
+body{
+  background-color: #708090;
+  height:100%;
+  overflow: hidden;
+  font-family: "Quicksand", sans-serif;
+  font-size: 1rem;
+}
+
+#container{
+  height:100%;
+  min-height: 100vh;
+  min-width: 768px;
+  position: relative;
+}
+
+#game_board {
+  background-color: #0bf;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  max-width: 90vw;
+  max-height: 90vh;
+  aspect-ratio: 16/9;
+}
+
+
+
+/*FRAMES DO JOGO */
+.frame{
+  display: none;
+  width: 100%;
+  height: 100%;
+  background-color: antiquewhite;
+  position: relative;
+  overflow: hidden;
+}
+  
+
+
+/* ELEMENTOS GERAIS */
+.jackat{
+  position: absolute;
+  width: 15%;
+  aspect-ratio: 1/1;
+  background: url("../images/jackat.gif");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:bottom;
+  bottom: 15%;
+  left: 10%;
+  z-index:10;
+}
+
+.jackat.parado{
+  background-image: url("../images/jackat-normal.gif");
+}
+
+
+.rato{
+  position: absolute;
+  width: 20%;
+  aspect-ratio: 2/1.3;
+  background: url("../images/rato.gif");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:bottom;  
+  bottom: 10%;
+  left: -20%;
+  z-index: 11;
+}
+
+
+
+/* MOVIMENTOS */
+.jackat-jump{
+  background: url("../images/jackat-pulando.gif");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:bottom;  
+}
+
+
+
+/* ABERTURA */
+#fr_abertura{
+  text-align: center;  
+  position:relative;
+}
+#abertura{
+  position: absolute;
+  z-index:10;
+  width:57%;
+  height: 55%;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  background-image: url("../images/abertura-box.png");
+  background-repeat: no-repeat;
+  background-size:contain;
+}
+#abertura h1 {
+  padding-top:5%;
+}
+#abertura h1 img{
+  width:93%;
+}
+
+#abertura .texto{
+  padding: 8%;
+  width: 100%;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 11;
+  font-size: 1.4vw;
+}
+
+#bt_next{
+  flex: 0 0 8%;
+  background-color: transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden; 
+}
+
+#bt_next img{
+  width: 100%;
+}
+
+#pText{
+  padding: 0 4%;
+}
+
+#bt_back{
+  flex: 0 0 8%;
+  background-color: transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden; 
+  visibility: hidden;
+}
+
+#bt_back img{
+  width: 100%;
+  transform: scaleX(-1);
+}
+
+
+
+#bt_start{
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden; 
+}
+
+
+
+#fr_abertura .caixa_tras{
+  position:absolute;
+  background-image: url("../images/casinha_tras.png");
+  z-index:8;  
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+}
+
+#fr_abertura .caixa_frente{
+  position:absolute;
+  background-image: url("../images/casinha_frente.png");
+  z-index:9;
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+}
+
+
+
+/* PARTIDA */
+#cenario_partida .bg_ceu{
+  background-image: url("../images/ceu_primavera.png");
+}
+#cenario_partida .bg_cenario{
+  background-image: url("../images/cenario_primavera.png");
+}
+/*
+#cenario_partida .bg_casa_partida{
+  background-image: url("../images/Casinha\ de\ gato.png");
+  z-index: 10;
+}
+*/
+
+#partida{
+  position:relative; 
+  width:100%;
+  height:100%;  
+}
+
+#partida .caixa_tras, #fr_missao #cenario_primavera .caixa_tras{
+  position:absolute;
+  background-image: url("../images/casinha_tras.png");
+  z-index:10;  
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+}
+
+#partida .caixa_frente{
+  position:absolute;
+  background-image: url("../images/casinha_frente.png");
+  z-index:13;
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+}
+
+
+
+/* MISSÃO */
+#fr_missao{  
+  width:100%;
+  height:100%;
+}
+
+.estacao{ 
+  width:100%;
+  height:100%;  
+  position: absolute;
+  top:0;
+  left:0;
+  opacity: 0;
+  -webkit-transition: opacity 2s;
+  -moz-transition: opacity 2s;     
+  transition: opacity 2s; 
+}
+.estacao.current{
+  opacity: 1 !important;
+}
+.estacao div{
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+  
+  position: absolute;
+  top:0;
+  left:0;
+}
+
+
+.bg_ceu{
+  z-index: 0;
+}
+.bg_predios{
+  background-image: url("../images/cidade.png");
+  z-index: 1;
+}
+.bg_cenario{
+  z-index: 2;
+}
+
+
+/* Cenário primavera */
+#cenario_primavera{
+  right: auto;
+}
+#cenario_primavera .bg_ceu{
+  background-image: url("../images/ceu_primavera.png");
+}
+#cenario_primavera .bg_cenario{
+  background-image: url("../images/cenario_primavera.png");
+}
+
+/* Cenário verão */
+#cenario_verao .bg_ceu{
+  background-image: url("../images/ceu_verao.png");
+}
+#cenario_verao .bg_cenario{
+  background-image: url("../images/cenario_verao.png");
+}
+
+/* Cenário outono */
+#cenario_outono .bg_ceu{
+  background-image: url("../images/ceu_outono.png");
+}
+#cenario_outono .bg_cenario{
+  background-image: url("../images/cenario_outono.png");
+}
+
+/* Cenário inverno */
+#cenario_inverno .bg_ceu{
+  background-image: url("../images/ceu_inverno.png");
+}
+#cenario_inverno .bg_cenario{
+  background-image: url("../images/cenario_inverno.png");
+}
+
+
+
+/* OBSTÁCULOS */
+.obstaculo{
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:bottom;
+  left: 100%;
+  z-index:12;
+}
+
+.cachorro{  
+  width: 13%;
+  aspect-ratio: 2/1;
+  background-image: url("../images/cachorro.png");
+  bottom: 15%;
+}
+
+.balao{
+  width: 9%;
+  aspect-ratio: 1/1.75;
+  background-image: url("../images/balao.png");
+  bottom: 55%;
+}
+
+.passaro{
+  width: 10%;
+  aspect-ratio: 1/1;
+  background-image: url("../images/passaro.gif");
+  bottom: 68%;
+}
+
+.floco_neve{
+  width: 8%;
+  aspect-ratio: 1/1;
+  background-image: url("../images/floco_neve.png");
+  bottom: 60%;
+}
+
+.boneco_neve_1{
+  width: 19%;
+  aspect-ratio: 2/1.3;
+  background-image: url("../images/boneco_neve_1.png");
+  bottom: 15%;
+}
+
+.boneco_neve_2{
+  width: 13%;
+  aspect-ratio: 1/1.3;
+  background-image: url("../images/boneco_neve_2.png");
+  bottom: 15%;
+}
+
+
+
+/* PRÊMIOS */
+.novelo{
+  position: absolute;
+  width: 9%;
+  aspect-ratio: 2/1.4;  
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:bottom;
+  bottom: 15%;
+  left: 100%;
+  z-index:9;
+}
+.novelo.azul{
+  background-image: url("../images/novelo_azul.png");
+}
+.novelo.laranja{
+  background-image: url("../images/novelo_laranja.png");
+}
+.novelo.rosa{
+  background-image: url("../images/novelo_rosa.png");
+}
+.novelo.verde{
+  background-image: url("../images/novelo_verde.png");
+}
+
+
+/* FINAL */
+#cenario_final .bg_ceu_final{
+  background-image: url("../images/ceu_inverno.png");
+}
+#cenario_final .bg_predios_final{
+  background-image: url("../images/cidade.png");
+}
+#cenario_final .bg_cenario_final{
+  background-image: url("../images/cenario_inverno.png");
+}
+/*
+#cenario_final .bg_casa_chegada{
+  background-image: url("../images/Casinha\ de\ gato.png");
+  z-index: 10;
+}
+*/
+
+#cenario_final div{
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+  
+  position: absolute;
+  top:0;
+  left:0;
+}
+
+#final{
+  position:relative; 
+  width:100%;
+  height:100%;  
+}
+
+#final .caixa_tras{
+  position:absolute;
+  background-image: url("../images/casinha_final_tras.png");
+  z-index:10;  
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+}
+
+#final .caixa_frente{
+  position:absolute;
+  background-image: url("../images/casinha_final_frente.png");
+  z-index:13;
+  width:100%;
+  height:100%;
+  
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: cover;
+}

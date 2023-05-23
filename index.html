@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Jackat</title>
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+	<link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+
+	<div id="container">
+  	
+		<div id="game_board">
+			
+			<!-- ABERTURA -->
+			<div id="fr_abertura" class="frame">
+              
+				<div class="estacao current" id="cenario_partida">
+					<div class="bg_ceu"></div>
+					<div class="bg_predios"></div>
+					<div class="bg_cenario"></div>
+					<div class="bg_casa_partida"></div>
+				</div>
+              
+              	<div id="abertura">
+
+                    <h1><img src="images/logo.png" alt="Jackcat"></h1>
+                  
+                  	<div class="texto">                      
+                    	<button id="bt_back" onclick="changeText('voltar');"> <img src="https://jackat.midiadigital.info/images/seta-av.png" alt="voltar"> </button>
+                      	<p id="pText">Olá, este é o Jackat. Ele adora novelos de lã que o aquece no inverno.</p>
+                    	<button id="bt_next" onclick="changeText('avancar');"> <img src="https://jackat.midiadigital.info/images/seta-av.png" alt="avançar"> </button>
+                  	</div>
+
+                    <button type="button" id="bt_start"><img src="https://jackat.midiadigital.info/images/botao-start.png" onMouseOver="this.src='https://jackat.midiadigital.info/images/botao-start-2.png'" onMouseOut="this.src='https://jackat.midiadigital.info/images/botao-start.png'" width="50%" alt="start"></button>
+
+                </div>
+
+				<div class="caixa_tras"></div>
+				<div class="jackat parado"></div>           
+				<div class="caixa_frente"></div>
+
+			</div>
+
+			
+			<!-- PARTIDA -->
+			<div id="fr_partida" class="frame">
+              
+				<div class="estacao current" id="cenario_partida">
+					<div class="bg_ceu"></div>
+					<div class="bg_predios"></div>
+					<div class="bg_cenario"></div>
+					<div class="bg_casa_partida"></div>
+				</div>
+
+              	<div id="partida">
+                  <div class="caixa_tras"></div>
+                  <div class="jackat parado"></div>
+                  <div class="rato"></div>              
+                  <div class="caixa_frente"></div>
+                </div>
+
+			</div>
+
+			
+			<!-- MISSAO -->
+			<div id="fr_missao" class="frame">
+
+				<div class="estacao current" id="cenario_primavera">
+					<div class="bg_ceu"></div>
+					<div class="bg_predios"></div>
+					<div class="bg_cenario"></div>
+					<div class="caixa_tras" id="caixa"></div>
+				</div>
+
+				<div class="estacao" id="cenario_verao">
+					<div class="bg_ceu"></div>
+					<div class="bg_predios"></div>
+					<div class="bg_cenario"></div>
+				</div>
+
+				<div class="estacao" id="cenario_outono">
+					<div class="bg_ceu"></div>
+					<div class="bg_predios"></div>
+					<div class="bg_cenario"></div>
+				</div>
+
+				<div class="estacao" id="cenario_inverno">
+					<div class="bg_ceu"></div>
+					<div class="bg_predios"></div>
+					<div class="bg_cenario"></div>
+				</div>
+
+				<div class="jackat"></div>
+
+			</div>
+
+			
+			<!-- FINAL -->
+			<div id="fr_final" class="frame">
+
+				<div class="current" id="cenario_final">
+					<div class="bg_ceu_final"></div>
+					<div class="bg_predios_final"></div>
+					<div class="bg_cenario_final"></div>
+					<div class="bg_casa_chegada"></div>
+				</div>
+
+              	<div id="final">
+                  <div class="caixa_tras"></div>
+                  <div class="jackat"></div>
+                  <div class="caixa_frente"></div>
+                </div>
+
+			</div>
+			
+		</div>
+
+	</div>
+
+  
+	<script src="scripts/scripts.js" type="text/javascript"></script>
+  
+</body>
+</html>
