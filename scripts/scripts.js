@@ -1,16 +1,12 @@
 /*-----------------------------------------------------
-CONFIGURAÇÕES
+COMPORTAMENTOS GERAIS
 ------------------------------------------------------*/
-//URL do jogo
-const game_url = "https://jackat.midiadigital.info"
-const season_duration = 7; //Tempo de duração de cada seção em segundos.
-const velocidade_predios = 20000; //em milessegundos
-var velocidade_cenario = 3000; //em milessegundos
-const velocidade_rato = 2500; //em milessegundos
-const velocidade_pulo = 1000; //em milessegundos
 
 //Recarrega a página quando redimensiona a tela
 window.onresize = function(){ location.reload(); }
+
+
+
 
 
 /*-----------------------------------------------------
@@ -37,6 +33,25 @@ const jackat_jump_sound = new Audio('sounds/jackat-jump.wav');
 
 
 
+
+
+/*-----------------------------------------------------
+CONFIGURAÇÕES
+------------------------------------------------------*/
+
+//URL do jogo
+const game_url = "https://jackat.midiadigital.info"
+const season_duration = 12; //Tempo de duração de cada seção em segundos.
+const velocidade_predios = 20000; //em milessegundos
+var velocidade_cenario = 3000; //em milessegundos
+const velocidade_rato = 2500; //em milessegundos
+const velocidade_pulo = 1000; //em milessegundos
+const position_h_choque = (board_width * 20) / 100; //porcentagem da largura da tela
+
+
+
+
+
 /*-----------------------------------------------------
 PRELOAD DAS IMAGENS
 ------------------------------------------------------*/
@@ -47,6 +62,7 @@ function preload() {
         images[i].src = preload.arguments[i];
     }
 }
+
 preload(
     game_url+"/images/cenario_primavera.png",
     game_url+"/images/cenario_verao.png",
@@ -82,9 +98,12 @@ preload(
 
 
 
+
+
 /*-----------------------------------------------------
 FUNÇÕES GERAIS
 ------------------------------------------------------*/
+
 //Retorna array com número aleatórios que representam
 //o tempo de jogo de aparecimento de objetos
 function random_time(max,qtd) {
@@ -112,11 +131,7 @@ function random_time(max,qtd) {
 }
 
 
-
-/*-----------------------------------------------------
-OCULTA TODOS OS FRAMES
-Função que oculta todos os frames (reset).
-------------------------------------------------------*/
+//Oculta todos os frames (reset)
 function reset_frames() {
 
     document.querySelectorAll('.frame').forEach(function(el) {
@@ -127,10 +142,43 @@ function reset_frames() {
 
 
 
+
+
+/*-----------------------------------------------------
+MENU
+------------------------------------------------------*/
+
+const bt_menu = document.querySelectorAll("#menu a");
+bt_menu.forEach(bt => {
+
+    bt.addEventListener('click', function() {
+
+
+        //Captura destino do link
+        const destino = this.hash;
+
+        //Pega frame destino
+        const fr_destino = document.querySelector(destino);
+
+        //Oculta todos os frames
+        reset_frames();
+
+        //Exibe frame do destino
+        fr_destino.style.display = 'block';
+
+    });    
+
+});
+
+
+
+
+
 /*-----------------------------------------------------
 ABERTURA
 Ao carregar a página, apresenta frame da abertura.
 ------------------------------------------------------*/
+
 //Carrega frame abertura
 const fr_abertura = document.querySelector("#fr_abertura");
 reset_frames();
@@ -186,10 +234,15 @@ function changeText(acao){
 
 }
 
+
+
+
+
 /*-----------------------------------------------------
 START
 Ao clicar no botão star, carrega o frame da partida   
 ------------------------------------------------------*/
+
 const bt_start = document.querySelector("#bt_start");
 
 bt_start.addEventListener('click', function (e) {
@@ -210,11 +263,14 @@ bt_start.addEventListener('click', function (e) {
 
 
 
+
+
 /*-----------------------------------------------------
 PARTIDA
 Rato atravessa a tela. Ao chegar no final, carrega 
 o frame da missão
 ------------------------------------------------------*/
+
 //Carrega o rato
 const rato = document.querySelector("#fr_partida .rato");
 
@@ -258,13 +314,20 @@ function partida() {
 
 
 
+
+
 /*-----------------------------------------------------
 MISSÃO
 Frame da missão do jogo, onde serão capturados os 
 novelos desviando dos obstáculos.
 ------------------------------------------------------*/
+
 //Carrega o frame da missão do jogo
 const fr_missao = document.querySelector("#fr_missao");
+
+//Carrega o frame do cenário final
+const fr_final = document.querySelector("#final");
+
 //Carrega fundos
 const bg_predios = document.querySelectorAll(".bg_predios");
 const bg_cenario = document.querySelectorAll(".bg_cenario");
@@ -274,7 +337,8 @@ const caixa = document.querySelector("#caixa");
 const missao = () => {
 
     //Animação da cidade
-    bg_predios.forEach(element => element.animate(
+    const anima_predios = [];
+    bg_predios.forEach(element => anima_predios.push(element.animate(
             [
                 //Keyframes
                 {
@@ -289,10 +353,11 @@ const missao = () => {
                 iterations: Infinity
             }
         )
-    );
+    ));
 
     //Animação do cenario
-    bg_cenario.forEach(element => element.animate(
+    const anima_cenario = [];
+    bg_cenario.forEach(element => anima_cenario.push(element.animate(
             [
                 //Keyframes
                 {
@@ -307,7 +372,12 @@ const missao = () => {
                 iterations: Infinity
             }
         )
-    );
+    ));
+
+    const stop_animations = () => {
+        anima_predios.forEach((e) => { e.pause() });
+        anima_cenario.forEach((e) => { e.pause() });
+    };
 
     //Animação da caixa
     caixa.animate(
@@ -434,33 +504,52 @@ const missao = () => {
     
     }
 
-
-    //Comandos de teclado
+    //Execução do pulo
     var jump_locked = false;
-    const command_exec = (e) => {
+    const jump_exec = () => {
 
-        if (e.code === 'Space') {
+        if (jump_locked) {
+            return; 
+        } else {
 
-            if (jump_locked) {
-                return; 
-            } else {
+            //Bloqueia pulo
+            jump_locked = true;
 
-                //Bloqueia pulo
-                jump_locked = true;
+            //Executa pulo
+            jackat_jump();
 
-                //Executa pulo
-                jackat_jump();
-
-                //Desbloqueia o pulo
-                setTimeout(() => { jump_locked = false; },(velocidade_pulo-50)); 
-
-            }
+            //Desbloqueia o pulo
+            setTimeout(() => { jump_locked = false; },(velocidade_pulo-50)); 
 
         }
+
     }
 
     //Comandos de teclado    
-    document.addEventListener('keydown', command_exec);
+    document.addEventListener('keydown', (e) => {
+
+        //Comando apra pulo
+        if (e.code === 'Space' || e.code === 'ArrowUp') {
+
+            jump_exec();
+
+        }
+
+    });
+
+    //Comandos de mouse e touch
+    fr_missao.addEventListener("mouseclick", () => {
+        jump_exec();
+    });
+    fr_missao.addEventListener("touch", () => {
+        jump_exec();
+    });
+    fr_missao.addEventListener("touchstart", () => {
+        jump_exec();
+    });
+    fr_missao.addEventListener("click", () => {
+        jump_exec();
+    });
 
 
     //Novelos
@@ -550,7 +639,6 @@ const missao = () => {
     }
 
 
-
     //Contagem do tempo de jogo (ações que acontecem com tempo determinado)
     var play_time = 0;
     var season_time = 0;
@@ -601,19 +689,15 @@ const missao = () => {
     const time_count = setInterval(time_progress,1000);
 
 
-    //Função que leva para a tela final
+
+    /*-----------------------------------------------------
+    FINAL
+    Ao cumprir a missão, carrega o frame final.
+    ------------------------------------------------------*/
     const the_end = () => {
 
-        //Pega a posição atual dos prédios
-        const predios_transit = document.querySelector("#fr_missao .current .bg_predios");
-        predios_transit_position = window.getComputedStyle(predios_transit).getPropertyValue('background-position');
-
-        //Pega a posição atual dos cenario
-        const cenario_transit = document.querySelector("#fr_missao .current .bg_predios");
-        cenario_transit_position = window.getComputedStyle(cenario_transit).getPropertyValue('background-position');
-
         //Desabilita comandos
-        document.removeEventListener('keydown', command_exec);
+        jump_locked = true;
 
         //Para contegem de tempo
         clearInterval(time_count);
@@ -621,29 +705,111 @@ const missao = () => {
         //Para o loop do jogo
         clearInterval(loop);
 
-        //Carrega tela final
-        final(predios_transit_position,cenario_transit_position);        
+        //Animação da chegada na casinha
+        fr_final.style.display = 'block';
+        const final_animate = fr_final.animate(
+            [
+                //Keyframes
+                {
+                    left: "100%"
+                },
+                {
+                    left: "0%"
+                }
+            ],
+            {
+                duration: velocidade_cenario,
+                iterations: 1
+            }
+        );
+
+        //Quando terminar a animação
+        final_animate.onfinish = (event) => {
+            
+            //Para animação do cenário
+            stop_animations();
+
+            //Animação final do personagem
+            const jackcat_final = jackat.animate(
+                [
+                    //Keyframes
+                    {
+                        left: "10%"
+                    },
+                    {
+                        left: "100%"
+                    }
+                ],
+                {
+                    duration: velocidade_cenario,
+                    iterations: 1
+                }
+            );
+
+
+            //Quando termina a animação do personagem
+            jackcat_final.onfinish = (event) => {
+
+                //Remove o div do personagem
+                jackat.style.display = 'none';
+                jackat.remove();
+
+                //Informa resultado?
+
+            }
+
+        };     
         
     }
 
 
-    //Loop de detecção das ações do jogo
+
+    /*-----------------------------------------------------
+    O JOGO
+    Loop de execução do jogo
+    ------------------------------------------------------*/
     const loop = setInterval(() => {
 
-        //Captura posição de todos os novelos na tela
+        //Captura todos os novelos na tela
         const novelos_ativos = document.querySelectorAll(".novelo");
 
-        //Captura posição de todos os obstáculos na tela
+        //Capturatodos os obstáculos na tela
         const obstaculos_ativos = document.querySelectorAll(".obstaculo");
 
+        //Pega a altura atual do personagem
+        let jackat_position = jackat.getBoundingClientRect();
+
         //Choque com novelos
+        novelos_ativos.forEach((e) => { 
+
+            //Pega a posição do novelo específico
+            const novelo_h_position = e.offsetLeft;
+            const novelo_position = e.getBoundingClientRect();
+
+            //Posição de choque
+            if (novelo_h_position <= position_h_choque && novelo_h_position >= jackat_position.left) {
+
+                //Condição para choque com novelo
+                if (jackat_position.bottom >= novelo_position.top && jackat_position.top <= novelo_position.bottom) {
+               
+                    console.log("pegou");
+                    e.remove();
+
+                } else {
+                    console.log("passou");
+                }
+
+            }
+
+        });
 
 
         //Choque com obstáculos (game-over)
 
 
-        //Fim do tempo de jogo
-        if (play_time >= (season_duration*4)) {
+
+        //Fim do tempo de jogo (depois de decorrido o tempo de quatro estrações e não existirem mais novemos ou obstáculos na tela)
+        if (play_time >= (season_duration*4) && novelos_ativos.length == 0 && obstaculos_ativos.length) {
             the_end();
         }
 
@@ -658,64 +824,5 @@ const missao = () => {
         }
     
     });
-
-
-}
-
-
-
-/*-----------------------------------------------------
-FINAL
-Ao cumprir a missão, carrega o frame final.
-------------------------------------------------------*/
-
-//Carrega elementos
-const fr_final = document.querySelector("#fr_final");
-const jackat_final = fr_final.querySelector(".jackat");
-
-//Execução da tela de Partida
-function final(predios_position,cenario_position) {
-
-    //Ajusta posição dos predios
-    const predios_final = fr_final.querySelector(".current .bg_predios_final");
-    predios_final.style.backgroundPosition=predios_position;
-
-    //Ajusta posição do cenario
-    const cenario_final = fr_final.querySelector(".current .bg_cenario_final");
-    cenario_final.style.backgroundPosition=cenario_position;
-    console.log(cenario_position);
-
-
-    //Oculta demais frames
-    reset_frames();
-
-    //Carrega o frame final
-    fr_final.style.display = 'block';
-
-    //Animação do personagem
-    jackat_final.animate(
-        [
-            //Keyframes
-            {
-                left: "10%"
-            },
-            {
-                left: "100%"
-            }
-        ],
-        {
-            duration: velocidade_cenario,
-            iterations: 1
-        }
-    );
-
-    //Permanece na tela de partida pelo tempo de movimento do personagem
-    setTimeout(() => {
-
-        //Para a animação do personagem
-        jackat_final.style.display = 'none';
-        jackat_final.remove();
-
-    },velocidade_cenario);    
 
 }
