@@ -42,11 +42,19 @@ CONFIGURAÇÕES
 //URL do jogo
 const game_url = "https://jackat.midiadigital.info"
 const season_duration = 60; //Tempo de duração de cada seção em segundos.
-const velocidade_predios = 20000; //em milessegundos
+const velocidade_predios = 10000; //em milessegundos
 var velocidade_cenario = 3000; //em milessegundos
 const velocidade_rato = 2500; //em milessegundos
 const velocidade_pulo = 1000; //em milessegundos
 const position_h_choque = (board_width * 20) / 100; //porcentagem da largura da tela
+
+//Cálculo da velocidade da tela em pixels por milessegundo
+const px_ms = board_width/velocidade_cenario;
+
+//Contagem de tempo
+var play_time = 0;
+var season_time = 0;
+var season_atual = 0;
 
 
 
@@ -257,9 +265,9 @@ bt_start.addEventListener('click', function (e) {
     fr_partida.style.display = 'block';
   
     //Start musica
-  musica_jogo_sound.volume=0.4;
-  musica_jogo_sound.loop="true";
-  musica_jogo_sound.play();
+    musica_jogo_sound.volume=0.4;
+    musica_jogo_sound.loop="true";
+    musica_jogo_sound.play();
 
     //Executa a partida
     partida();
@@ -579,6 +587,9 @@ const missao = () => {
         //Insere o novelo no frame da missão na posição inicial
         fr_missao.appendChild(um_novelo);
 
+        //Calcula velocidade de deslocamento
+        const vel_novelo = (um_novelo.clientWidth + board_width) / px_ms;
+
         //Animação do novelo
         um_novelo.animate(
             [
@@ -591,7 +602,7 @@ const missao = () => {
                 }
             ],
             {
-                duration: velocidade_cenario + velocidade_cenario*0.1,
+                duration: vel_novelo,
                 iterations: 1
             }
         );
@@ -600,7 +611,7 @@ const missao = () => {
         setTimeout(function(){
             um_novelo.style.display = 'none';
             um_novelo.remove();
-        }, velocidade_cenario + velocidade_cenario*0.1,);
+        }, vel_novelo);
 
     }
 
@@ -619,19 +630,22 @@ const missao = () => {
         //Insere o novelo no frame da missão na posição inicial
         fr_missao.appendChild(um_obstaculo);
 
+        //Calcula velocidade de deslocamento
+        const vel_obstaculo = (um_obstaculo.clientWidth + board_width) / px_ms;
+
         //Animação do novelo
         um_obstaculo.animate(
             [
                 //Keyframes
                 {
-                    left: 100 + "%"
+                    right: "-"+ um_obstaculo.clientWidth +"px"
                 },
                 {                    
-                    left: "-"+ um_obstaculo.clientWidth +"px"
+                    right: board_width +"px"
                 }
             ],
             {
-                duration: velocidade_cenario + velocidade_cenario*0.2,
+                duration: vel_obstaculo,
                 iterations: 1
             }
         );
@@ -640,16 +654,12 @@ const missao = () => {
         setTimeout(function(){
             um_obstaculo.style.display = 'none';
             um_obstaculo.remove();
-        }, velocidade_cenario + velocidade_cenario*0.2,);
+        }, vel_obstaculo);
 
     }
 
 
     //Contagem do tempo de jogo (ações que acontecem com tempo determinado)
-    var play_time = 0;
-    var season_time = 0;
-    var season_atual = 0;
-
     const time_progress = () => {
 
         if (play_time <= ((season_duration*4)-1)) {

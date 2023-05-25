@@ -350,7 +350,6 @@ body{
   background-size: contain;
   background-repeat: no-repeat;
   background-position:bottom;
-  left: 100%;
   z-index:12;
 }
 
@@ -383,14 +382,14 @@ body{
 }
 
 .boneco_neve_1{
-  width: 19%;
+  width: 16%;
   aspect-ratio: 2/1.3;
   background-image: url("../images/boneco_neve_1.png");
   bottom: 15%;
 }
 
 .boneco_neve_2{
-  width: 13%;
+  width: 11%;
   aspect-ratio: 1/1.3;
   background-image: url("../images/boneco_neve_2.png");
   bottom: 15%;
