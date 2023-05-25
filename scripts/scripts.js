@@ -29,9 +29,9 @@ const bg1_width = Math.round((bg0_width * board_height) / bg0_height);
 const bg1_height = board_height;
 
 //Sons
-const jackat_jump_sound = new Audio('sounds/jackat-jump.wav');
-
-
+const jackat_jump_sound = new Audio('sounds/jackat_jump.mp3');
+const novelo_pick_sound = new Audio('sounds/novelo.mp3');
+const musica_jogo_sound = new Audio('sounds/musica_jogo.mp3');
 
 
 
@@ -41,7 +41,7 @@ CONFIGURAÇÕES
 
 //URL do jogo
 const game_url = "https://jackat.midiadigital.info"
-const season_duration = 12; //Tempo de duração de cada seção em segundos.
+const season_duration = 60; //Tempo de duração de cada seção em segundos.
 const velocidade_predios = 20000; //em milessegundos
 var velocidade_cenario = 3000; //em milessegundos
 const velocidade_rato = 2500; //em milessegundos
@@ -211,7 +211,7 @@ function changeText(acao){
     }
 
     if(f == 1){
-        document.getElementById('pText').innerHTML = "Oh não, ele foi roubado!";
+        document.getElementById('pText').innerHTML = "Oh, não! Ele teve seu suéter destruído!";
         bt_back.style.visibility = "visible";
         bt_next.style.visibility = "visible";
     }
@@ -223,7 +223,7 @@ function changeText(acao){
     }
 
     if(f == 3){
-        document.getElementById('pText').innerHTML = "Passe por todas as estaçoes coletando os novelos para chegar quentinho ao inverno.";
+        document.getElementById('pText').innerHTML = "Passe por todas as estações coletando os novelos para chegar quentinho ao inverno.";
         bt_back.style.visibility = "visible";
         bt_next.style.visibility = "hidden";
     }
@@ -255,6 +255,11 @@ bt_start.addEventListener('click', function (e) {
 
     //Exibe frame da partida
     fr_partida.style.display = 'block';
+  
+    //Start musica
+  musica_jogo_sound.volume=0.4;
+  musica_jogo_sound.loop="true";
+  musica_jogo_sound.play();
 
     //Executa a partida
     partida();
@@ -324,6 +329,7 @@ novelos desviando dos obstáculos.
 
 //Carrega o frame da missão do jogo
 const fr_missao = document.querySelector("#fr_missao");
+const fr_missao_position = fr_missao.getBoundingClientRect();
 
 //Carrega o frame do cenário final
 const fr_final = document.querySelector("#final");
@@ -730,7 +736,7 @@ const missao = () => {
             stop_animations();
 
             //Animação final do personagem
-            const jackcat_final = jackat.animate(
+            const jackat_final = jackat.animate(
                 [
                     //Keyframes
                     {
@@ -748,7 +754,7 @@ const missao = () => {
 
 
             //Quando termina a animação do personagem
-            jackcat_final.onfinish = (event) => {
+            jackat_final.onfinish = (event) => {
 
                 //Remove o div do personagem
                 jackat.style.display = 'none';
@@ -776,24 +782,33 @@ const missao = () => {
         //Capturatodos os obstáculos na tela
         const obstaculos_ativos = document.querySelectorAll(".obstaculo");
 
-        //Pega a altura atual do personagem
-        let jackat_position = jackat.getBoundingClientRect();
+        //Pega a posição atual do personagem
+        let jackat_position = {};
+        jackat_position.top = +window.getComputedStyle(jackat).top.replace("px","");
+      	jackat_position.bottom = +window.getComputedStyle(jackat).top.replace("px","") + jackat.offsetHeight;
+        jackat_position.right = jackat.offsetLeft + jackat.offsetHeight;
+        jackat_position.left = jackat.offsetLeft
 
         //Choque com novelos
         novelos_ativos.forEach((e) => { 
 
             //Pega a posição do novelo específico
-            const novelo_h_position = e.offsetLeft;
-            const novelo_position = e.getBoundingClientRect();
+            let novelo_position = {};
+            novelo_position.top = +window.getComputedStyle(e).top.replace("px","");
+            novelo_position.bottom = +window.getComputedStyle(e).top.replace("px","") + e.offsetHeight;
+            novelo_position.right = e.offsetLeft + e.offsetHeight;
+            novelo_position.left = e.offsetLeft
+
 
             //Posição de choque
-            if (novelo_h_position <= position_h_choque && novelo_h_position >= jackat_position.left) {
-
+            if (novelo_position.left <= position_h_choque && novelo_position.left >= jackat_position.left) {
+              
                 //Condição para choque com novelo
                 if (jackat_position.bottom >= novelo_position.top && jackat_position.top <= novelo_position.bottom) {
                
                     console.log("pegou");
                     e.remove();
+                  novelo_pick_sound.play();
 
                 } else {
                     console.log("passou");
