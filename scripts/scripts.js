@@ -32,6 +32,8 @@ const bg1_height = board_height;
 const jackat_jump_sound = new Audio('sounds/jackat_jump.mp3');
 const novelo_pick_sound = new Audio('sounds/novelo.mp3');
 const musica_jogo_sound = new Audio('sounds/musica_jogo.mp3');
+const balao_estourando_sound = new Audio('sounds/balao.mp3');
+const game_over_sound = new Audio('sounds/game_over.mp3');
 
 
 
@@ -39,23 +41,45 @@ const musica_jogo_sound = new Audio('sounds/musica_jogo.mp3');
 CONFIGURAÇÕES
 ------------------------------------------------------*/
 
-//URL do jogo
+//Gerais
 const game_url = "https://jackat.midiadigital.info"
-const season_duration = 60; //Tempo de duração de cada seção em segundos.
-const velocidade_predios = 10000; //em milessegundos
+const season_duration = 30; //Tempo de duração de cada seção em segundos.
+var velocidade_predios = 10000; //em milessegundos
 var velocidade_cenario = 3000; //em milessegundos
 const velocidade_rato = 2500; //em milessegundos
 const velocidade_pulo = 1000; //em milessegundos
 const position_h_choque = (board_width * 20) / 100; //porcentagem da largura da tela
 
+
+
+/*-----------------------------------------------------
+CONTROLES DO JOGO
+------------------------------------------------------*/
+
+//Controle movimentos
+var jackat_lives = true;
+var jump_locked = false;
+var timeout_jump = null;
+
 //Cálculo da velocidade da tela em pixels por milessegundo
-const px_ms = board_width/velocidade_cenario;
+var px_ms = board_width/velocidade_cenario;
 
 //Contagem de tempo
 var play_time = 0;
 var season_time = 0;
 var season_atual = 0;
 
+//Contagem pontos
+const meta_novelos = 40;
+var novelos_coletados = 0;
+var meta_pct = 0;
+var placar_size = 100 //tamanho da máscara do placar. Começa em 100% e diminui para mostrar avanço;
+
+//Monitoramento dos objetos
+var anima_novelos = [];
+var anima_obstaculos = [];
+var timeout_novelos = [];
+var timeout_obstaculos = [];
 
 
 
@@ -114,7 +138,7 @@ FUNÇÕES GERAIS
 
 //Retorna array com número aleatórios que representam
 //o tempo de jogo de aparecimento de objetos
-function random_time(max,qtd) {
+function random_time(max,qtd,avoid=false) {
 
     var i, arr = [];
     for (i = 0; i < max; i++) {
@@ -128,10 +152,24 @@ function random_time(max,qtd) {
         arr[n] = arr[p];
         arr[p] = tmp;
     }
-
+        
     times = [];
-    for (i = 0; i < qtd; i++) {
-        times.push(arr[i]);
+    i = 0;
+    while (times.length < qtd) {
+
+        //Com números proibidos
+        if (avoid) {
+
+            if (!avoid.includes(arr[i])) {
+                times.push(arr[i]);
+            }
+
+        //Sem números proibidos
+        } else {
+            times.push(arr[i]);
+        }
+
+    i++;
     }
 
     return times;
@@ -265,8 +303,8 @@ bt_start.addEventListener('click', function (e) {
     fr_partida.style.display = 'block';
   
     //Start musica
-    musica_jogo_sound.volume=0.4;
-    musica_jogo_sound.loop="true";
+    musica_jogo_sound.volume = 0.4;
+    musica_jogo_sound.loop = true;
     musica_jogo_sound.play();
 
     //Executa a partida
@@ -350,48 +388,58 @@ const caixa = document.querySelector("#caixa");
 //Execução da tela de missão
 const missao = () => {
 
-    //Animação da cidade
+    //Monitoramento das animações
     const anima_predios = [];
-    bg_predios.forEach(element => anima_predios.push(element.animate(
-            [
-                //Keyframes
-                {
-                    backgroundPositionX: "0"
-                },
-                {
-                    backgroundPositionX: "-" + bg1_width + "px"
-                }
-            ],
-            {
-                duration: velocidade_predios,
-                iterations: Infinity
-            }
-        )
-    ));
-
-    //Animação do cenario
     const anima_cenario = [];
-    bg_cenario.forEach(element => anima_cenario.push(element.animate(
-            [
-                //Keyframes
-                {
-                    backgroundPositionX: "0"
-                },
-                {
-                    backgroundPositionX: "-" + bg1_width + "px"
-                }
-            ],
-            {
-                duration: velocidade_cenario,
-                iterations: Infinity
-            }
-        )
-    ));
 
+    //Função que para a animação
     const stop_animations = () => {
         anima_predios.forEach((e) => { e.pause() });
         anima_cenario.forEach((e) => { e.pause() });
     };
+    
+    //Função que começa a animação
+    const start_animations = (vel_predios,vel_cenario) => {
+
+        //Animação dos predios
+        bg_predios.forEach(element => anima_predios.push(element.animate(
+                [
+                    //Keyframes
+                    {
+                        backgroundPositionX: "0"
+                    },
+                    {
+                        backgroundPositionX: "-" + bg1_width + "px"
+                    }
+                ],
+                {
+                    duration: vel_predios,
+                    iterations: Infinity
+                }
+            )
+        ));
+
+        //Animação do cenario
+        bg_cenario.forEach(element => anima_cenario.push(element.animate(
+                [
+                    //Keyframes
+                    {
+                        backgroundPositionX: "0"
+                    },
+                    {
+                        backgroundPositionX: "-" + bg1_width + "px"
+                    }
+                ],
+                {
+                    duration: vel_cenario,
+                    iterations: Infinity
+                }
+            )
+        ));
+    }
+
+    //Começa a animação com a velocidade inicial
+    start_animations(velocidade_predios,velocidade_cenario);
 
     //Animação da caixa
     caixa.animate(
@@ -426,13 +474,13 @@ const missao = () => {
         ['primavera',20,10,["cachorro"]],
         ['verao',15,15,["cachorro","balao"]],
         ['outono',10,20,["cachorro","passaro"]],
-        ['inverno',5,25,["floco_neve","boneco_neve_1","boneco_neve_2"]]
+        ['inverno',5,25,["floco_neve","floco_neve","boneco_neve_1","boneco_neve_2"]]
     ];
 
     //Mudança de estações (muda o cenário)
     function season_change() {
 
-        if (season_atual < seasons.length) {
+        if (season_atual < (seasons.length)-1) {
 
             //Seleciona estação atual
             var leaving = document.querySelector("#cenario_" + seasons[season_atual][0]);
@@ -445,10 +493,9 @@ const missao = () => {
 
             //Revela próxima estação
             entering.classList.add("current");
-            console.log(seasons[season_atual][0]);
+            console.log("É " + seasons[season_atual][0] + "!");
 
             //Oculta estação atual
-            //setTimeout(function(){ leaving.classList.remove("current"); }, 500);
             leaving.classList.remove("current");
 
             //Reseta o tempo da estação
@@ -519,7 +566,6 @@ const missao = () => {
     }
 
     //Execução do pulo
-    var jump_locked = false;
     const jump_exec = () => {
 
         if (jump_locked) {
@@ -533,7 +579,9 @@ const missao = () => {
             jackat_jump();
 
             //Desbloqueia o pulo
-            setTimeout(() => { jump_locked = false; },(velocidade_pulo-50)); 
+            if (jackat_lives) {
+                timeout_jump = setTimeout(() => { jump_locked = false; },(velocidade_pulo-50)); 
+            }
 
         }
 
@@ -566,7 +614,14 @@ const missao = () => {
     });
 
 
-    //Novelos
+    //Função que para a animação
+    const stop_objects_animations = () => {
+        anima_novelos.forEach((e) => { e.pause() });
+        anima_obstaculos.forEach((e) => { e.pause() });
+    };
+
+
+    //Configuração dos novelos
     const novelos = ['azul', 'laranja', 'rosa', 'verde'];
 
     //Spawn de novelos
@@ -581,7 +636,7 @@ const missao = () => {
         um_novelo.classList.add(novelos[novelo]);
 
         //Ajusta altura aleatória do novelo (entre 15 e 75% da tela a partir do bottom)
-        var position_novelo = Math.floor(Math.random() * (75 - 15) + 15);
+        var position_novelo = Math.floor(Math.random() * (75 - 20) + 20);
         um_novelo.style.bottom = position_novelo + "%";
 
         //Insere o novelo no frame da missão na posição inicial
@@ -591,30 +646,42 @@ const missao = () => {
         const vel_novelo = (um_novelo.clientWidth + board_width) / px_ms;
 
         //Animação do novelo
-        um_novelo.animate(
-            [
-                //Keyframes
+        anima_novelos.push(
+            um_novelo.animate(
+                [
+                    //Keyframes
+                    {
+                        left: 100 + "%"
+                    },
+                    {                    
+                        left: "-"+ um_novelo.clientWidth +"px"
+                    }
+                ],
                 {
-                    left: 100 + "%"
-                },
-                {                    
-                    left: "-"+ um_novelo.clientWidth +"px"
+                    duration: vel_novelo,
+                    iterations: 1
                 }
-            ],
-            {
-                duration: vel_novelo,
-                iterations: 1
-            }
+            )
         );
 
         //Apaga o novelo
-        setTimeout(function(){
+        timeout_novelos.push(setTimeout(function(){
             um_novelo.style.display = 'none';
             um_novelo.remove();
-        }, vel_novelo);
+        }, vel_novelo));
 
     }
 
+
+    //Configuração dos obstáculos
+    //obstaculo,[altura_minima,altura_maxima]
+    const cnf_obstaculos = []
+    cnf_obstaculos["cachorro"] = [0,0];
+    cnf_obstaculos["balao"] = [50,65];
+    cnf_obstaculos["passaro"] = [50,75];
+    cnf_obstaculos["floco_neve"] = [45,75];
+    cnf_obstaculos["boneco_neve_1"] = [0,0];
+    cnf_obstaculos["boneco_neve_2"] = [0,0];
 
     //Spawn de obstáculos
     function spawn_obstaculos() {
@@ -622,10 +689,21 @@ const missao = () => {
         //Escolhe um novelo aleatóriamente
         const obstaculo = Math.floor(Math.random() * seasons[season_atual][3].length);
 
+        //Nome do obstaculo        
+        const ob_name = seasons[season_atual][3][obstaculo];
+
         //Cria o objeto com o obstáculo
         const um_obstaculo = document.createElement("div");
         um_obstaculo.classList.add("obstaculo");        
-        um_obstaculo.classList.add(seasons[season_atual][3][obstaculo]);
+        um_obstaculo.classList.add(ob_name);
+
+        //Ajusta altura aleatória conforme o obstáculo
+        if (cnf_obstaculos[ob_name][0] > 0) {
+
+            var position_obstaculo = Math.floor(Math.random() * (cnf_obstaculos[ob_name][1] - cnf_obstaculos[ob_name][0]) + cnf_obstaculos[ob_name][0]);
+            um_obstaculo.style.bottom = position_obstaculo + "%";
+
+        }
 
         //Insere o novelo no frame da missão na posição inicial
         fr_missao.appendChild(um_obstaculo);
@@ -634,27 +712,30 @@ const missao = () => {
         const vel_obstaculo = (um_obstaculo.clientWidth + board_width) / px_ms;
 
         //Animação do novelo
-        um_obstaculo.animate(
-            [
-                //Keyframes
+        anima_obstaculos.push(
+            um_obstaculo.animate(
+                [
+                    //Keyframes
+                    {
+                        right: "-"+ um_obstaculo.clientWidth +"px"
+                    },
+                    {                    
+                        right: board_width +"px"
+                    }
+                ],
                 {
-                    right: "-"+ um_obstaculo.clientWidth +"px"
-                },
-                {                    
-                    right: board_width +"px"
+                    duration: vel_obstaculo,
+                    iterations: 1
                 }
-            ],
-            {
-                duration: vel_obstaculo,
-                iterations: 1
-            }
+            )
+
         );
 
         //Apaga o obstáculo
-        setTimeout(function(){
+        timeout_obstaculos.push(setTimeout(function(){
             um_obstaculo.style.display = 'none';
             um_obstaculo.remove();
-        }, vel_obstaculo);
+        }, vel_obstaculo));
 
     }
 
@@ -667,25 +748,31 @@ const missao = () => {
             //Avanço do tempo
             play_time += 1;
             season_time += 1;
-            console.log(play_time+"/"+season_time);
+            //console.log(play_time+"/"+season_time);
+
+            //Determina os tempos de aparecimento dos obstaculos (com controle para não coincidirem com os novelos!)
+            var obstaculos_times = random_time(season_duration,seasons[season_atual][2]);
 
             //Determina os tempos de aparecimento dos novelos
             var novelos_times = random_time(season_duration,seasons[season_atual][1]);
 
-            //Determina os tempos de aparecimento dos obstaculos
-            var obstaculos_times = random_time(season_duration,seasons[season_atual][2]);
+            //Captura todos os novelos na tela
+            const novelos_ativos = document.querySelectorAll(".novelo");
 
-            //Muda de estação
-            if (season_time >= season_duration) {
+            //Capturatodos os obstáculos na tela
+            const obstaculos_ativos = document.querySelectorAll(".obstaculo");
+
+            //Muda de estação quando der o tempo e não tiver mais novelos e obstáculos na tela
+            if (season_time >= season_duration && novelos_ativos.length == 0 && obstaculos_ativos.length == 0) {
 
                 //Muda o cenário
                 season_change();
 
-                //Determina tempos de aparecimento dos novelos na nova estação
-                novelos_times = random_time(season_duration,seasons[season_atual][1]);
-
                 //Determina os tempos de aparecimento dos obstaculos na nova estação
                 obstaculos_times = random_time(season_duration,seasons[season_atual][2]);
+
+                //Determina tempos de aparecimento dos novelos na nova estação
+                novelos_times = random_time(season_duration,seasons[season_atual][1]);
 
             }
 
@@ -703,6 +790,122 @@ const missao = () => {
 
     }    
     const time_count = setInterval(time_progress,1000);
+
+
+
+    /*-----------------------------------------------------
+    TELAS FINAIS
+    Apresenta telas finais de gameover e win
+    ------------------------------------------------------*/
+    
+    //Apresenta tela de gameover
+    const gameover_screen = () => {
+        
+        setTimeout(() => {
+
+            //Seleciona tela de gameover
+            const screen = document.getElementById("gameover_screen");
+
+            screen.style.display = "block";
+            screen.animate(
+                [
+                    //Keyframes
+                    {
+                        top: "-100%"
+                    },
+                    {
+                        top: "50%"
+                    }
+                ],
+                {
+                    duration: 500
+                }
+            );
+
+        },1000);
+
+    }
+
+    //Apresenta tela de vitoria
+    const win_screen = () => {
+        
+        setTimeout(() => {
+
+            //Seleciona tela de gameover
+            const screen = document.getElementById("win_screen");
+
+            screen.style.display = "block";
+            screen.animate(
+                [
+                    //Keyframes
+                    {
+                        top: "-100%"
+                    },
+                    {
+                        top: "50%"
+                    }
+                ],
+                {
+                    duration: 500
+                }
+            );
+
+        },1000);
+
+    }
+
+
+
+    /*-----------------------------------------------------
+    GAME OVER
+    Rotina acionada quando toca em um obstáculo ao longo do jogo
+    ------------------------------------------------------*/
+    const game_over = (obstaculo) => {
+
+        console.log("Game over!");
+
+        //Para a nimações
+        stop_animations();
+        stop_objects_animations();
+
+        //Sons
+        musica_jogo_sound.pause();
+        game_over_sound.play();
+
+        //Desabilita comandos
+        jump_locked = true;
+
+        //Para contegem de tempo
+        clearInterval(time_count);
+
+        //Para o loop do jogo
+        clearInterval(loop);                    
+
+        //Muda personagem para gameover
+        jackat.classList.add("gameover");
+        jackat_lives = false;
+        clearTimeout(timeout_jump);
+
+        //Cancela desaparecimento novelos
+        timeout_novelos.forEach((e) => { 
+            clearTimeout(e);
+        });
+
+        //Cancela desaparecimento obstáculos
+        timeout_obstaculos.forEach((e) => {  
+            clearTimeout(e);
+        });
+
+        //Se for balão
+        if (obstaculo.classList.contains('balao')) {
+            obstaculo.classList.add("estourado");
+            balao_estourando_sound.play();
+        }
+
+        //Apresenta tela de gameover
+        gameover_screen();
+
+    }
 
 
 
@@ -762,15 +965,50 @@ const missao = () => {
                 }
             );
 
+            //Se não tiver atingido a meta de novelos
+            if (meta_pct < 100) {
 
-            //Quando termina a animação do personagem
-            jackat_final.onfinish = (event) => {
+                const tempo = velocidade_cenario/2.5;
+                setTimeout(() => {
 
-                //Remove o div do personagem
-                jackat.style.display = 'none';
-                jackat.remove();
+                    console.log("Game over!");
 
-                //Informa resultado?
+                    //Para a animação final do personagem
+                    jackat_final.pause();
+
+                    //Sons
+                    musica_jogo_sound.pause();
+                    game_over_sound.play();                   
+
+                    //Muda personagem para congelado
+                    jackat.classList.add("frozen");
+                    jackat_lives = false;
+
+                    //Apresenta tela de gameover
+                    gameover_screen();
+
+                },tempo);
+
+
+            //Se tiver atingido a meta (WIN!)
+            } else {
+
+                //Quando termina a animação do personagem
+                jackat_final.onfinish = (event) => {
+
+                    console.log("Você venceu!");
+
+                    //Remove o div do personagem
+                    jackat.style.display = 'none';
+                    jackat.remove();
+
+                    //Para o som do jogo
+                    musica_jogo_sound.loop = false;
+
+                    //Apresenta tela da vitória
+                    win_screen();
+
+                }
 
             }
 
@@ -785,6 +1023,9 @@ const missao = () => {
     Loop de execução do jogo
     ------------------------------------------------------*/
     const loop = setInterval(() => {
+
+        //Captura máscara do placar
+        var placar_mask = document.getElementById("placar_mascara");
 
         //Captura todos os novelos na tela
         const novelos_ativos = document.querySelectorAll(".novelo");
@@ -809,19 +1050,29 @@ const missao = () => {
             novelo_position.right = e.offsetLeft + e.offsetHeight;
             novelo_position.left = e.offsetLeft
 
-
             //Posição de choque
             if (novelo_position.left <= position_h_choque && novelo_position.left >= jackat_position.left) {
               
                 //Condição para choque com novelo
                 if (jackat_position.bottom >= novelo_position.top && jackat_position.top <= novelo_position.bottom) {
                
-                    console.log("pegou");
-                    e.remove();
-                  novelo_pick_sound.play();
+                    //Soma novelo coletado
+                    novelos_coletados += 1;
 
-                } else {
-                    console.log("passou");
+                    //Calcula porcentagem completa
+                    meta_pct = Math.round((novelos_coletados * 100) / meta_novelos);                    
+                    console.log(novelos_coletados + " de " + meta_novelos + " (" + meta_pct + "%)");
+
+                    //Determina tamanho da máscara do placar
+                    var placar_size = 100 - meta_pct;
+
+                    //Ajusta exibição do plarcarplacar_mask.width
+                    placar_mask.style.width = placar_size+"%";
+                    
+                    //Remove o novelo coletado do cenário.
+                    e.remove();
+                    novelo_pick_sound.play();
+
                 }
 
             }
@@ -830,24 +1081,40 @@ const missao = () => {
 
 
         //Choque com obstáculos (game-over)
+        obstaculos_ativos.forEach((e) => { 
 
+            //Pega a posição do obstaculo específico
+            let obstaculo_position = {};
+            obstaculo_position.top = +window.getComputedStyle(e).top.replace("px","");
+            obstaculo_position.bottom = +window.getComputedStyle(e).top.replace("px","") + e.offsetHeight;
+            obstaculo_position.right = e.offsetLeft + e.offsetHeight;
+            obstaculo_position.left = e.offsetLeft
+
+            //Posição de choque
+            if (obstaculo_position.left <= position_h_choque && obstaculo_position.left >= jackat_position.left) {
+              
+                //Condição para choque com obstaculo
+
+                //Obs: Falta inserir condição para a posição final do objeto. Aqui está constando apenas a posição inicial
+                //Por exemplo, considera choque apenas com a cabeça do cachorro, e não com a cauda.
+
+                if (jackat_position.bottom >= obstaculo_position.top && jackat_position.top <= obstaculo_position.bottom) {
+               
+                    //Aciona rotina de game over
+                    game_over(e);                   
+
+                }
+
+            }
+
+        });
 
 
         //Fim do tempo de jogo (depois de decorrido o tempo de quatro estrações e não existirem mais novemos ou obstáculos na tela)
-        if (play_time >= (season_duration*4) && novelos_ativos.length == 0 && obstaculos_ativos.length) {
+        if (play_time >= (season_duration*4) && novelos_ativos.length == 0 && obstaculos_ativos.length == 0) {
             the_end();
         }
 
     },10);
-
-
-    //PROVISÓRIO - CARREGA TELA FINAL
-    document.addEventListener('keydown', event => {
-
-        if (event.code === 'Enter') {
-            the_end();
-        }
-    
-    });
 
 }

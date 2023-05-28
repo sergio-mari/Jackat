@@ -34,7 +34,7 @@ body{
 #container{
   height:100%;
   min-height: 100vh;
-  min-width: 768px;
+  min-width: 480px !important;
   position: relative;
 }
 
@@ -46,7 +46,8 @@ body{
   right: 0;
   top: 0;
   bottom: 0;
-  max-width: 90vw;
+  max-width: 100vw;
+  min-width: 480px !important;
   max-height: 90vh;
   aspect-ratio: 16/9;
 }
@@ -70,7 +71,7 @@ body{
   position: absolute;
   width: 15%;
   aspect-ratio: 1/1;
-  background: url("../images/jackat.gif");
+  background-image: url("../images/jackat.gif");
   background-size: contain;
   background-repeat: no-repeat;
   background-position:bottom;
@@ -81,6 +82,14 @@ body{
 
 .jackat.parado{
   background-image: url("../images/jackat-normal.gif");
+}
+
+.jackat.gameover{
+  background-image: url("../images/jackat-lose.png") !important;
+}
+
+.jackat.frozen{
+  background-image: url("../images/jackat-lose.png") !important;
 }
 
 
@@ -134,8 +143,9 @@ body{
 }
 
 #abertura .texto{
-  padding: 8%;
+  padding: 5%;
   width: 100%;
+  min-height: 7%;
   display:flex;
   align-items: center;
   justify-content: space-between;
@@ -267,6 +277,33 @@ body{
   height:100%;
 }
 
+#placar{  
+  position: relative;
+  width: 22%;
+  aspect-ratio: 38/7;
+  left: calc(78% - 1vw);
+  top: 1vw;
+  background-image: url("../images/placar.png");
+  background-repeat: no-repeat;
+  background-size:100%;
+  background-position-y: center;
+  z-index: 20;
+}
+#placar #placar_preenchimento{
+  position: absolute;
+  width: 96%;
+  height: 40%;
+  top: 26%;
+  left: 2%;
+}
+#placar #placar_preenchimento #placar_mascara{
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #FFF;
+}
+
 .estacao{ 
   width:100%;
   height:100%;  
@@ -293,7 +330,6 @@ body{
   top:0;
   left:0;
 }
-
 
 .bg_ceu{
   z-index: 0;
@@ -361,10 +397,13 @@ body{
 }
 
 .balao{
-  width: 9%;
+  width: 8%;
   aspect-ratio: 1/1.75;
   background-image: url("../images/balao.png");
   bottom: 55%;
+}
+.balao.estourado{
+  background-image: url("../images/balao_estourando.png");
 }
 
 .passaro{
@@ -423,6 +462,39 @@ body{
 }
 
 
+/* GAME OVER */
+#gameover_screen{
+  position: absolute;
+  z-index:30;
+  width:57%;
+  height: 55%;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  background-image: url("../images/abertura-box.png");
+  background-repeat: no-repeat;
+  background-size:contain;
+  display: none;
+}
+
+
+/* WIN */
+#win_screen{
+  position: absolute;
+  z-index:30;
+  width:57%;
+  height: 55%;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  background-image: url("../images/abertura-box.png");
+  background-repeat: no-repeat;
+  background-size:contain;
+  display: none;
+}
+
+
+
 /* FINAL */
 #cenario_final .bg_ceu_final{
   background-image: url("../images/ceu_inverno.png");
@@ -433,12 +505,6 @@ body{
 #cenario_final .bg_cenario_final{
   background-image: url("../images/cenario_inverno.png");
 }
-/*
-#cenario_final .bg_casa_chegada{
-  background-image: url("../images/Casinha\ de\ gato.png");
-  z-index: 10;
-}
-*/
 
 #cenario_final div{
   width:100%;
@@ -454,9 +520,10 @@ body{
 }
 
 #final{
-  position:relative; 
+  position:absolute; 
   width:100%;
   height:100%;
+  top: 0;
   display: none;
 }
 
