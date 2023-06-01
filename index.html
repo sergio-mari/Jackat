@@ -5,10 +5,22 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Jackat</title>
-  	<link rel="icon" type="image/x-icon" href="https://jackat.midiadigital.info/images/icon.png">
+  	
   	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
 	<link rel="stylesheet" href="styles/styles.css">
-  	<meta name="theme-color" content="#ec6263">
+
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/icons/apple-touch-icon-57x57.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/icons/apple-touch-icon-114x114.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/icons/apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/icons/apple-touch-icon-144x144.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/icons/apple-touch-icon-120x120.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="images/icons/apple-touch-icon-152x152.png" />
+	<link rel="icon" type="image/png" href="images/icons/favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="images/icons/favicon-16x16.png" sizes="16x16" />
+	<meta name="application-name" content="Jackat"/>
+	<meta name="msapplication-TileColor" content="#EC6263" />
+	<meta name="msapplication-TileImage" content="images/icons/mstile-144x144.png" />
+	
   
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://jackat.midiadigital.info">
@@ -37,7 +49,7 @@
               
               	<div id="abertura">
 
-                    <h1><img src="images/logo_2.png" alt="Jackcat"></h1>
+                    <h1><img src="images/logo.png" alt="Jackcat"></h1>
                   
                   	<div class="texto">                      
                     	<button id="bt_back" onclick="changeText('voltar');"> <img src="https://jackat.midiadigital.info/images/seta-av.png" alt="voltar"> </button>
@@ -45,7 +57,7 @@
                     	<button id="bt_next" onclick="changeText('avancar');"> <img src="https://jackat.midiadigital.info/images/seta-av.png" alt="avançar"> </button>
                   	</div>
 
-                    <button type="button" id="bt_start"><img src="https://jackat.midiadigital.info/images/botao-start.png" onMouseOver="this.src='https://jackat.midiadigital.info/images/botao-start-2.png'" onMouseOut="this.src='https://jackat.midiadigital.info/images/botao-start.png'" width="50%" alt="start"></button>
+                    <button type="button" id="bt_start"><img src="https://jackat.midiadigital.info/images/botao-start.png" onMouseOver="this.src='https://jackat.midiadigital.info/images/botao-start-2.png'" onMouseOut="this.src='https://jackat.midiadigital.info/images/botao-start.png'" alt="start"></button>
 
                 </div>
 
@@ -115,13 +127,11 @@
 				<div class="jackat"></div>
 
 				<div id="gameover_screen">
-					<p>VOCÊ PERDEU</p>
-					<p><a href=""><strong>JOGAR NOVAMENTE</strong></a></p>
+					<p class="btn"><a href="" class="botao"><strong>JOGAR NOVAMENTE</strong></a></p>
 				</div>
 
 				<div id="win_screen">
-					<p>PARABÉNS, VOCÊ VENCEU</p>
-					<p><a href=""><strong>JOGAR NOVAMENTE</strong></a></p>
+					<p class="btn"><a href="" class="botao"><strong>JOGAR NOVAMENTE</strong></a></p>
 				</div>
 
 				<div id="final">
@@ -130,42 +140,32 @@
 				</div>
 
 			</div>
-			
-			<!-- FINAL 
-			<div id="fr_final" class="frame">
 
-				<div class="current" id="cenario_final">
-					<div class="bg_ceu_final"></div>
-					<div class="bg_predios_final"></div>
-					<div class="bg_cenario_final"></div>
-					<div class="bg_casa_chegada"></div>
-				</div>
-
-              	<div id="final">
-                  <div class="caixa_tras"></div>
-                  <div class="jackat"></div>
-                  <div class="caixa_frente"></div>
-                </div>
-
-			</div>
-			-->
 
 			<!-- AJUDA -->			
 			<div id="fr_ajuda" class="frame">
 
 				<div class="page">
 
-					<div class="pg_logo"><img src="images/logo_2.png" alt="Jackat"></div>
+					<p><a href="" class="botao"><strong>X FECHAR</strong></a></p>
+
+					<br>
+
+					<div class="pg_logo"><img src="images/logo.png" alt="Jackat"></div>
 
 					<h2>Como jogar?</h2>
 
-					<p>Clique com o botão direito do mouse ou pressione ENTER ou seta para cima para pular.</p>
+					<p>Jackat precisa chegar ao inverno com novelos suficientes para enfrentar o frio, então pegue o máximo de novelos que você conseguir em cada estação.</p>
+
+					<p>Para vencer, pegue novelos até completar a barra indicativa no canto superior direito da tela e chegue até o fim do inverno sem esbarrar nos obstáculos.</p>
+						
+					<p>Para pegar os novelos e desviar dos obstáculo, você precisará saltar.</p>
 					
-					<p>Pegue o máximo de novelos  que você conseguir em cada estação. Lembre-se que você precisa completar a barra para conseguir um novo casaco e sobreviver ao frio do inverno.</p>
+					<p>Para saltar, clique com o botão direito do mouse, toque na tela, pressione ENTER ou seta para cima.</p>
 
-					<p>Para vencer complete a barra de novelos e chegue até o fim do inverno sem esbarrar nos obstáculos</p>					
+					<br>
 
-					<p><a href=""><strong>JOGAR AGORA</strong></a></p>
+					<p><a href="" class="botao"><strong>&#9658; JOGAR AGORA</strong></a></p>
 
 				</div>
 
@@ -177,14 +177,20 @@
 
 				<div class="page">
 
-					<div class="pg_logo"><img src="images/logo_2.png" alt="Jackat"></div>
+					<p><a href="" class="botao"><strong>X FECHAR</strong></a></p>
+
+					<br>
+
+					<div class="pg_logo"><img src="images/logo.png" alt="Jackat"></div>
 
 					<h2>Créditos</h2>
 
 					<p>Este jogo foi desenvolvido por estudantes do curso de Artes Visuais da Universidade Anhanguera unidade Catuaí de Londrina-PR, na disciplina de Multimídia, no primeiro semestre de 2023.</p>
 
+					<p>O código fonte do jogo está disponível open-source no seguinte repositório: <a target="_blank" href="https://github.com/sergio-mari/Jackat">https://github.com/sergio-mari/Jackat</a></p>
+
 					<p>
-						<strong>Coordenação:</strong><br>
+						<strong>Orientação:</strong><br>
 						Prof. Sergio Mari Jr.
 					</p>
 
@@ -202,14 +208,17 @@
 						Rebecca Nunes Peixoto Baniski<br>
 						Renan Cardoso Rossini<br>
 						Sofia Brunetto Tramonte<br>
-					</p>	
-                  <p> <strong> Imagens:</strong><br>
-                       Cenário: Stockgiu via Freepik<br>
-                       Objetos: Freepik
-                  </p>
-                                              
+					</p>
 
-					<p><a href=""><strong>JOGAR AGORA</strong></a></p>
+					<p><strong>Imagens:</strong><br>
+						Cenário: Stockgiu via Freepik<br>
+						Objetos: Freepik<br>
+						Jackat: Polyana Veloso de Alcantara
+					</p>
+
+					<br>
+
+					<p><a href="" class="botao"><strong>&#9658; JOGAR AGORA</strong></a></p>
 
 				</div>
 

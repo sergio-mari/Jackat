@@ -109,8 +109,11 @@ preload(
     game_url+"/images/ceu_inverno.png",
 
     game_url+"/images/jackat.gif",
+    game_url+"/images/jackat5.gif",
     game_url+"/images/jackat-normal.gif",
     game_url+"/images/jackat-pulando.gif",
+    game_url+"/images/jackat-congelado.gif",
+    game_url+"/images/jackat-assustado.gif",
     game_url+"/images/rato.gif",
 
     game_url+"/images/novelo_azul.png",
@@ -125,6 +128,9 @@ preload(
     game_url+"/images/cachorro.png",
     game_url+"/images/floco_neve.png",
     game_url+"/images/passaro.gif",
+
+    game_url+"/images/tela_voce_perdeu.png",
+    game_url+"/images/tela_voce_venceu.png",
 
 )
 
@@ -359,7 +365,7 @@ function partida() {
         fr_missao.style.display = 'block';
         missao();
 
-    },velocidade_rato);
+    },velocidade_rato-10);
 
 };
 
@@ -465,14 +471,14 @@ const missao = () => {
         caixa.style.display = 'none';
         caixa.remove();
 
-    },velocidade_cenario);
+    },velocidade_cenario-10);
 
 
     //Config estações
     //estacao,qtd_novelos,qtd_obstaculos,obstaculos,velocidade_cenario
     const seasons = [
         ['primavera',20,10,["cachorro"]],
-        ['verao',17,15,["cachorro","balao"]],
+        ['verao',15,15,["cachorro","balao"]],
         ['outono',12,20,["cachorro","passaro"]],
         ['inverno',7,25,["floco_neve","floco_neve","boneco_neve_1","boneco_neve_2"]]
     ];
@@ -532,7 +538,7 @@ const missao = () => {
             [
                 //Keyframes
                 {
-                    bottom: "10%",
+                    bottom: "17%",
                     easing: "ease-out",
                     offset: 0
                 },
@@ -552,7 +558,7 @@ const missao = () => {
                     offset: 0.55
                 },
                 {
-                    bottom: "10%",
+                    bottom: "17%",
                     easing: "ease-out",
                     offset: 1
                 }
@@ -668,7 +674,7 @@ const missao = () => {
         timeout_novelos.push(setTimeout(function(){
             um_novelo.style.display = 'none';
             um_novelo.remove();
-        }, vel_novelo));
+        }, vel_novelo-10));
 
     }
 
@@ -735,7 +741,7 @@ const missao = () => {
         timeout_obstaculos.push(setTimeout(function(){
             um_obstaculo.style.display = 'none';
             um_obstaculo.remove();
-        }, vel_obstaculo));
+        }, vel_obstaculo-10));
 
     }
 
@@ -968,7 +974,7 @@ const missao = () => {
             //Se não tiver atingido a meta de novelos
             if (meta_pct < 100) {
 
-                const tempo = velocidade_cenario/2.5;
+                const tempo = velocidade_cenario/3.3;
                 setTimeout(() => {
 
                     console.log("Game over!");
@@ -978,7 +984,10 @@ const missao = () => {
 
                     //Sons
                     musica_jogo_sound.pause();
-                    game_over_sound.play();                   
+                    game_over_sound.play(); 
+
+                    //Desabilita comandos
+                    jump_locked = true;                  
 
                     //Muda personagem para congelado
                     jackat.classList.add("frozen");

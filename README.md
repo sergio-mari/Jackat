@@ -22,7 +22,7 @@ O ambiente irá se movimenta da direita para a esquerda da tela, dando a sensaç
 Ao se deparar com um obstáculo ou um item que deva ser capturado, o personagem pode saltar (movimento vertical).
 ## Autores
 
-### Coordenação:
+### Orientação:
 - [@sergio-mari](https://www.github.com/sergio-mari)
 
 ### Alunos:

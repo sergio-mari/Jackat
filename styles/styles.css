@@ -9,12 +9,29 @@ html{
     height:100%;
 }
 
+
+
 a{
   text-decoration: none;
 }
 a:hover{
   text-decoration: underline;
 }
+
+a.botao{
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
+  background-color: #47a09b;
+}
+a.botao:hover{
+  color: #FFF;
+  text-decoration: none;
+  background-color: #f55f63;
+}
+
+
 
 h2{
   padding-bottom: 2%;
@@ -28,7 +45,8 @@ body{
   height:100%;
   overflow: hidden;
   font-family: "Quicksand", sans-serif;
-  font-size: 1rem;
+  font-size:calc(8px + 1vw);
+  list-style: 1.1em;
 }
 
 #container{
@@ -39,7 +57,7 @@ body{
 }
 
 #game_board {
-  background-color: #0bf;
+  background-color: #EC6263;
   position: absolute;
   margin: auto;
   left: 0;
@@ -50,6 +68,7 @@ body{
   min-width: 480px !important;
   max-height: 90vh;
   aspect-ratio: 16/9;
+  box-shadow: 0 0 100px 0 rgba(0,0,0,0.25);
 }
 
 
@@ -69,26 +88,27 @@ body{
 /* ELEMENTOS GERAIS */
 .jackat{
   position: absolute;
-  width: 18%;
-  aspect-ratio: 1/1;
+  width: 16%;
+  height: 23%;
   background-image: url("../images/jackat5.gif");
   background-size: contain;
   background-repeat: no-repeat;
   background-position:bottom;
-  bottom: 15%;
+  bottom: 17%;
   left: 10%;
   z-index:10;
 }
 
 .jackat.parado{
   background-image: url("../images/jackat-normal.gif");
-  width: 15% !important;
+  width: 14% !important;
 }
 
 .jackat.gameover{
   background-image: url("../images/jackat-assustado.gif") !important;
   z-index:13;
   width: 23% !important;
+  height: 30% !important;
   left: 5%;
 }
 
@@ -102,7 +122,7 @@ body{
   position: absolute;
   width: 20%;
   aspect-ratio: 2/1.3;
-  background: url("../images/rato.gif");
+  background-image: url("../images/rato.gif");
   background-size: contain;
   background-repeat: no-repeat;
   background-position:bottom;  
@@ -115,11 +135,12 @@ body{
 
 /* MOVIMENTOS */
 .jackat-jump{
-  width: 15% !important;
-  background: url("../images/jackat-pulando.gif");
+  width: 16% !important;
+  height: 22% !important;
+  background-image: url("../images/jackat-pulando.gif");
   background-size: contain;
   background-repeat: no-repeat;
-  background-position:bottom;  
+  background-position:bottom;
 }
 
 
@@ -151,12 +172,11 @@ body{
 #abertura .texto{
   padding: 5%;
   width: 100%;
-  min-height: 7%;
+  height: 33%;
   display:flex;
   align-items: center;
   justify-content: space-between;
   z-index: 11;
-  font-size: 1.4vw;
 }
 
 #bt_next{
@@ -190,11 +210,15 @@ body{
   transform: scaleX(-1);
 }
 #bt_start{
-  background-color: Transparent;
+  height: 12%;
+  background-color: transparent;
   background-repeat:no-repeat;
   border: none;
   cursor:pointer;
   overflow: hidden; 
+}
+#bt_start img{
+  height: 100%;
 }
 
 #fr_abertura .caixa_tras{
@@ -399,7 +423,7 @@ body{
   width: 13%;
   aspect-ratio: 2/1;
   background-image: url("../images/cachorro.png");
-  bottom: 15%;
+  bottom: 17%;
 }
 
 .balao{
@@ -430,14 +454,14 @@ body{
   width: 16%;
   aspect-ratio: 2/1.3;
   background-image: url("../images/boneco_neve_1.png");
-  bottom: 15%;
+  bottom: 17%;
 }
 
 .boneco_neve_2{
   width: 11%;
   aspect-ratio: 1/1.3;
   background-image: url("../images/boneco_neve_2.png");
-  bottom: 15%;
+  bottom: 17%;
 }
 
 
@@ -477,11 +501,18 @@ body{
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  background-image: url("../images/jackat_tela_voce_perdeu.png");
+  background-image: url("../images/tela_voce_perdeu.png");
   background-repeat: no-repeat;
   background-size:contain;
   display: none;
 }
+#gameover_screen .btn{
+  position: absolute;
+  top: 73%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 
 
 /* WIN */
@@ -493,10 +524,16 @@ body{
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  background-image: url("../images/jackat_tela_voce_venceu.png");
+  background-image: url("../images/tela_voce_venceu.png");
   background-repeat: no-repeat;
   background-size:contain;
   display: none;
+}
+#win_screen .btn{
+  position: absolute;
+  top: 80%;
+  left: 39%;
+  transform: translateX(-50%);
 }
 
 
@@ -561,7 +598,7 @@ body{
 
 /* PÁGINAS DE CONTEUDOS */
 .page{
-  padding: 8%;
+  padding: 6%;
   height: 100%;
   overflow-y: auto;
 }
