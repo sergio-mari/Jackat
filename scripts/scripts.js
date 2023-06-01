@@ -472,9 +472,9 @@ const missao = () => {
     //estacao,qtd_novelos,qtd_obstaculos,obstaculos,velocidade_cenario
     const seasons = [
         ['primavera',20,10,["cachorro"]],
-        ['verao',15,15,["cachorro","balao"]],
-        ['outono',10,20,["cachorro","passaro"]],
-        ['inverno',5,25,["floco_neve","floco_neve","boneco_neve_1","boneco_neve_2"]]
+        ['verao',17,15,["cachorro","balao"]],
+        ['outono',12,20,["cachorro","passaro"]],
+        ['inverno',7,25,["floco_neve","floco_neve","boneco_neve_1","boneco_neve_2"]]
     ];
 
     //Mudança de estações (muda o cenário)

@@ -69,9 +69,9 @@ body{
 /* ELEMENTOS GERAIS */
 .jackat{
   position: absolute;
-  width: 15%;
+  width: 18%;
   aspect-ratio: 1/1;
-  background-image: url("../images/jackat.gif");
+  background-image: url("../images/jackat5.gif");
   background-size: contain;
   background-repeat: no-repeat;
   background-position:bottom;
@@ -82,14 +82,19 @@ body{
 
 .jackat.parado{
   background-image: url("../images/jackat-normal.gif");
+  width: 15% !important;
 }
 
 .jackat.gameover{
-  background-image: url("../images/jackat-lose.png") !important;
+  background-image: url("../images/jackat-assustado.gif") !important;
+  z-index:13;
+  width: 23% !important;
+  left: 5%;
 }
 
 .jackat.frozen{
-  background-image: url("../images/jackat-lose.png") !important;
+  background-image: url("../images/jackat-congelado.gif") !important;
+  width: 20% !important;
 }
 
 
@@ -110,6 +115,7 @@ body{
 
 /* MOVIMENTOS */
 .jackat-jump{
+  width: 15% !important;
   background: url("../images/jackat-pulando.gif");
   background-size: contain;
   background-repeat: no-repeat;
@@ -471,7 +477,7 @@ body{
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  background-image: url("../images/abertura-box.png");
+  background-image: url("../images/jackat_tela_voce_perdeu.png");
   background-repeat: no-repeat;
   background-size:contain;
   display: none;
@@ -487,7 +493,7 @@ body{
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  background-image: url("../images/abertura-box.png");
+  background-image: url("../images/jackat_tela_voce_venceu.png");
   background-repeat: no-repeat;
   background-size:contain;
   display: none;
