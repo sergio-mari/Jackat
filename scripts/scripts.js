@@ -1120,7 +1120,7 @@ const missao = () => {
 
 
         //Fim do tempo de jogo (depois de decorrido o tempo de quatro estrações e não existirem mais novemos ou obstáculos na tela)
-        if (play_time >= (season_duration*4) && novelos_ativos.length == 0 && obstaculos_ativos.length == 0) {
+        if (play_time >= ((season_duration*4)+6) && novelos_ativos.length == 0 && obstaculos_ativos.length == 0) {
             the_end();
         }
 
